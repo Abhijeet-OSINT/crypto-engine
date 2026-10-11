@@ -36,6 +36,14 @@ public class CryptoApplication {
         System.out.println("==================================================");
         System.out.println("                 Crypto Engine CLI                ");
         System.out.println("==================================================");
+        System.out.println("Developed by:");
+        System.out.println("  Team Lead : Abhijeet");
+        System.out.println("  Team Mates:");
+        System.out.println("    - Abhay Mathur");
+        System.out.println("    - Aarush Sharma");
+        System.out.println("    - Mayanck");
+        System.out.println("    - Subham Kumar Pandey");
+        System.out.println("==================================================");
 
         // Run startup self-test
         CryptoEngineDiagnostics.runAllDiagnostics();
@@ -671,7 +679,17 @@ public class CryptoApplication {
                 String privKeyB64 = promptRequired("Enter Recipient ML-KEM-768 Private Key (Base64)");
                 try {
                     PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(HexUtils.base64ToBytes(privKeyB64));
-                    KeyFactory kf = KeyFactory.getInstance("ML-KEM-768", HybridPqcService.BC_PROVIDER);
+                    KeyFactory kf = null;
+                    for (String alg : new String[]{"ML-KEM-768", "ML-KEM", "Kyber768", "Kyber"}) {
+                        try {
+                            kf = KeyFactory.getInstance(alg, HybridPqcService.BC_PROVIDER);
+                            break;
+                        } catch (Exception ignored) {
+                        }
+                    }
+                    if (kf == null) {
+                        kf = KeyFactory.getInstance("ML-KEM-768");
+                    }
                     PrivateKey privKey = kf.generatePrivate(keySpec);
 
                     byte[] decrypted = HybridPqcService.decryptHybridEnvelope(HexUtils.base64ToBytes(wireB64), privKey);

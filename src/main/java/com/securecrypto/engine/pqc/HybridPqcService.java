@@ -73,34 +73,50 @@ public final class HybridPqcService {
         }
     }
 
+    private static KEM getKemInstance(String preferredAlg) throws NoSuchAlgorithmException, NoSuchProviderException {
+        if (preferredAlg != null && !preferredAlg.isBlank()) {
+            try {
+                return KEM.getInstance(preferredAlg, BC_PROVIDER);
+            } catch (Exception ignored) {
+                try {
+                    return KEM.getInstance(preferredAlg);
+                } catch (Exception ignored2) {
+                }
+            }
+        }
+        for (String alg : new String[]{"ML-KEM-768", "ML-KEM", "Kyber768", "Kyber"}) {
+            try {
+                return KEM.getInstance(alg, BC_PROVIDER);
+            } catch (Exception ignored) {
+                try {
+                    return KEM.getInstance(alg);
+                } catch (Exception ignored2) {
+                }
+            }
+        }
+        throw new NoSuchAlgorithmException("No KEM provider found for " + preferredAlg);
+    }
+
     public static MlKemEncapsulationResult encapsulateMlKem768(PublicKey publicKey) {
         try {
-            KEM kem;
-            try {
-                kem = KEM.getInstance("ML-KEM-768", BC_PROVIDER);
-            } catch (Exception e) {
-                kem = KEM.getInstance("ML-KEM", BC_PROVIDER);
-            }
+            KEM kem = getKemInstance(publicKey.getAlgorithm());
             KEM.Encapsulator encapsulator = kem.newEncapsulator(publicKey, null, RANDOM);
             KEM.Encapsulated encapsulated = encapsulator.encapsulate();
             return new MlKemEncapsulationResult(encapsulated.key(), encapsulated.encapsulation());
         } catch (Exception e) {
-            throw new CryptoEngineException("ML-KEM-768 encapsulation failed", e);
+            String msg = e.getMessage() != null ? e.getMessage() : (e.getCause() != null ? e.getCause().getMessage() : e.getClass().getSimpleName());
+            throw new CryptoEngineException("ML-KEM-768 encapsulation failed (" + msg + ")", e);
         }
     }
 
     public static SecretKey decapsulateMlKem768(PrivateKey privateKey, byte[] encapsulationCiphertext) {
         try {
-            KEM kem;
-            try {
-                kem = KEM.getInstance("ML-KEM-768", BC_PROVIDER);
-            } catch (Exception e) {
-                kem = KEM.getInstance("ML-KEM", BC_PROVIDER);
-            }
+            KEM kem = getKemInstance(privateKey.getAlgorithm());
             KEM.Decapsulator decapsulator = kem.newDecapsulator(privateKey);
             return decapsulator.decapsulate(encapsulationCiphertext);
         } catch (Exception e) {
-            throw new CryptoEngineException("ML-KEM-768 decapsulation failed", e);
+            String msg = e.getMessage() != null ? e.getMessage() : (e.getCause() != null ? e.getCause().getMessage() : e.getClass().getSimpleName());
+            throw new CryptoEngineException("ML-KEM-768 decapsulation failed (" + msg + ")", e);
         }
     }
 

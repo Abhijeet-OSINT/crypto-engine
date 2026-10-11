@@ -210,3 +210,14 @@ crypto-engine/
     └── test/java/com/securecrypto/engine/
         └── ComprehensiveCryptoTest.java        # 31 unit tests covering all ciphers
 ```
+
+## Development Team
+
+Developed by:
+- **Team Lead:** Abhijeet
+- **Team Mates:**
+  - Abhay Mathur
+  - Aarush Sharma
+  - Mayanck
+  - Subham Kumar Pandey
+
