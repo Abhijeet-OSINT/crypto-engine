@@ -28,11 +28,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Comprehensive JUnit 5 Test Suite for the Cryptographic Suite.
- * Validates algorithm correctness, KAT vectors, diagnostic diagnostics,
- * tamper detection, and error handling resilience.
- */
 public class ComprehensiveCryptoTest {
 
     private static final byte[] TEST_PAYLOAD = "The quick brown fox jumps over the lazy dog 1234567890".getBytes(StandardCharsets.UTF_8);
@@ -43,10 +38,10 @@ public class ComprehensiveCryptoTest {
         System.setProperty("bouncycastle.registration", "true");
     }
 
-    // --- DOMAIN 1: SYMMETRIC CIPHERS ---
+    // --- Symmetric Ciphers ---
 
     @Test
-    @DisplayName("Symmetric: DES Encryption & Decryption Round-Trip")
+    @DisplayName("DES encryption and decryption round-trip")
     void testDes() {
         SecretKey key = DesSuite.generateDesKey();
         byte[] iv = DesSuite.generateIv8();
@@ -60,7 +55,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Symmetric: Double-DES (2DES) Pipeline Encryption & Decryption")
+    @DisplayName("Double-DES (2DES) pipeline round-trip")
     void testDoubleDes() {
         DesSuite.DoubleDesKeys keys = DesSuite.generate2DesKeys();
         byte[] iv1 = DesSuite.generateIv8();
@@ -73,7 +68,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Symmetric: Triple-DES (3DES) Encryption & Decryption")
+    @DisplayName("Triple-DES (3DES) round-trip")
     void testTripleDes() {
         SecretKey key = DesSuite.generate3DesKey();
         byte[] iv = DesSuite.generateIv8();
@@ -86,7 +81,7 @@ public class ComprehensiveCryptoTest {
 
     @ParameterizedTest
     @ValueSource(ints = {128, 192, 256})
-    @DisplayName("Symmetric: AES-GCM 128/192/256 bits AEAD Round-Trip")
+    @DisplayName("AES-GCM key sizes (128, 192, 256 bits) with AAD")
     void testAesGcmKeySizes(int keySize) {
         SecretKey key = AesService.generateAesKey(keySize);
         byte[] iv = AesService.generateIv();
@@ -98,7 +93,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Symmetric: Blowfish Encryption & Decryption")
+    @DisplayName("Blowfish round-trip")
     void testBlowfish() {
         SecretKey key = BlockCiphers.generateBlowfishKey(256);
         byte[] iv = BlockCiphers.generateIv8();
@@ -110,7 +105,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Symmetric: Twofish Encryption & Decryption")
+    @DisplayName("Twofish round-trip")
     void testTwofish() {
         SecretKey key = BlockCiphers.generateTwofishKey(256);
         byte[] iv = BlockCiphers.generateIv16();
@@ -122,7 +117,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Symmetric: IDEA Encryption & Decryption")
+    @DisplayName("IDEA round-trip")
     void testIdea() {
         SecretKey key = BlockCiphers.generateIdeaKey();
         byte[] iv = BlockCiphers.generateIv8();
@@ -134,7 +129,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Symmetric: RC4 Stream Cipher Encryption & Decryption")
+    @DisplayName("RC4 stream cipher round-trip")
     void testRc4() {
         SecretKey key = RivestCiphers.generateRc4Key(16);
 
@@ -145,7 +140,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Symmetric: RC5 Block Cipher Encryption & Decryption")
+    @DisplayName("RC5 block cipher round-trip")
     void testRc5() {
         SecretKey key = RivestCiphers.generateRc5Key(16);
         byte[] iv = RivestCiphers.generateIv8();
@@ -157,7 +152,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Symmetric: RC6 Block Cipher Encryption & Decryption")
+    @DisplayName("RC6 block cipher round-trip")
     void testRc6() {
         SecretKey key = RivestCiphers.generateRc6Key(32);
         byte[] iv = RivestCiphers.generateIv16();
@@ -168,11 +163,11 @@ public class ComprehensiveCryptoTest {
         assertArrayEquals(TEST_PAYLOAD, decrypted);
     }
 
-    // --- DOMAIN 2: ASYMMETRIC CRYPTOGRAPHY ---
+    // --- Asymmetric Cryptography ---
 
     @ParameterizedTest
     @ValueSource(ints = {2048, 3072})
-    @DisplayName("Asymmetric: RSA-OAEP Encryption & Decryption (2048 & 3072 bit)")
+    @DisplayName("RSA-OAEP encryption and decryption")
     void testRsaOaep(int keySize) {
         KeyPair kp = RsaService.generateRsaKeyPair(keySize);
         byte[] ciphertext = RsaService.encryptOaep(TEST_PAYLOAD, kp.getPublic());
@@ -183,7 +178,7 @@ public class ComprehensiveCryptoTest {
 
     @ParameterizedTest
     @ValueSource(ints = {2048, 3072})
-    @DisplayName("Asymmetric: RSA-PSS Signature Creation & Verification (2048 & 3072 bit)")
+    @DisplayName("RSA-PSS signature creation and verification")
     void testRsaPss(int keySize) {
         KeyPair kp = RsaService.generateRsaKeyPair(keySize);
         byte[] signature = RsaService.signPss(TEST_PAYLOAD, kp.getPrivate());
@@ -193,7 +188,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Asymmetric: DSA Signature Creation & Verification (2048-bit)")
+    @DisplayName("DSA signature creation and verification")
     void testDsaSignature() {
         KeyPair kp = DigitalSignatureService.generateDsaKeyPair();
         byte[] signature = DigitalSignatureService.signDsa(TEST_PAYLOAD, kp.getPrivate());
@@ -203,7 +198,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Asymmetric: ECDSA Signature Creation & Verification (secp256r1)")
+    @DisplayName("ECDSA signature creation and verification (secp256r1)")
     void testEcdsaSignature() {
         KeyPair kp = DigitalSignatureService.generateEcdsaKeyPair();
         byte[] signature = DigitalSignatureService.signEcdsa(TEST_PAYLOAD, kp.getPrivate());
@@ -213,7 +208,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Asymmetric: Diffie-Hellman Key Agreement (Group 14 & Group 15)")
+    @DisplayName("Diffie-Hellman key agreement (Groups 14 and 15)")
     void testDhKeyAgreement() {
         KeyPair aliceGroup14 = KeyAgreementService.generateDhKeyPairGroup14();
         KeyPair bobGroup14 = KeyAgreementService.generateDhKeyPairGroup14();
@@ -233,7 +228,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Asymmetric: ECDH Key Agreement (secp256r1)")
+    @DisplayName("ECDH key agreement (secp256r1)")
     void testEcdhKeyAgreement() {
         KeyPair aliceKp = KeyAgreementService.generateEcdhKeyPair();
         KeyPair bobKp = KeyAgreementService.generateEcdhKeyPair();
@@ -244,10 +239,10 @@ public class ComprehensiveCryptoTest {
         assertArrayEquals(secretAlice, secretBob);
     }
 
-    // --- DOMAIN 3: HASHING & HMAC ---
+    // --- Hashing and HMAC ---
 
     @Test
-    @DisplayName("Hashing: Verification of Digest Outputs")
+    @DisplayName("Hash output lengths for MD5, SHA-1, SHA-2, SHA-3")
     void testHashAlgorithms() {
         byte[] md5 = HashHmacService.hashMd5(TEST_PAYLOAD);
         assertEquals(16, md5.length);
@@ -272,7 +267,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("HMAC: Verification of HmacSHA256 and HmacSHA512")
+    @DisplayName("HMAC computation for SHA-256 and SHA-512")
     void testHmac() {
         SecretKey key256 = HashHmacService.generateHmacKey("HmacSHA256", 256);
         byte[] mac256 = HashHmacService.hmacSha256(TEST_PAYLOAD, key256);
@@ -283,10 +278,10 @@ public class ComprehensiveCryptoTest {
         assertEquals(64, mac512.length);
     }
 
-    // --- DOMAIN 4: POST-QUANTUM & HYBRID CRYPTOGRAPHY ---
+    // --- Post-Quantum Hybrid ---
 
     @Test
-    @DisplayName("PQC: ML-KEM-768 Encapsulation & Decapsulation")
+    @DisplayName("ML-KEM-768 encapsulation and decapsulation")
     void testMlKem768() {
         KeyPair kp = HybridPqcService.generateMlKem768KeyPair();
         HybridPqcService.MlKemEncapsulationResult encResult = HybridPqcService.encapsulateMlKem768(kp.getPublic());
@@ -297,7 +292,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("PQC: Post-Quantum Hybrid Envelope (ML-KEM-768 + HKDF-SHA256 + AES-256-GCM + AAD)")
+    @DisplayName("ML-KEM-768 hybrid envelope round-trip with AAD")
     void testHybridPqcEnvelope() {
         KeyPair kp = HybridPqcService.generateMlKem768KeyPair();
         byte[] wireFormat = HybridPqcService.encryptHybridEnvelope(TEST_PAYLOAD, kp.getPublic(), AAD_METADATA);
@@ -309,10 +304,10 @@ public class ComprehensiveCryptoTest {
         assertArrayEquals(TEST_PAYLOAD, decrypted);
     }
 
-    // --- DOMAIN 5: CLASSICAL HISTORICAL CIPHERS ---
+    // --- Classical Ciphers ---
 
     @Test
-    @DisplayName("Classical: Caesar, ROT13, and Vigenère Ciphers")
+    @DisplayName("Classical Caesar, ROT13, and Vigenere round-trips")
     void testClassicalCiphers() {
         // Caesar
         String text = "Attack At Dawn!";
@@ -325,22 +320,22 @@ public class ComprehensiveCryptoTest {
         String rot13Dec = ClassicalCiphers.rot13(rot13Enc);
         assertEquals(text, rot13Dec);
 
-        // Vigenère
+        // Vigenere
         String vigenereEnc = ClassicalCiphers.encryptVigenere(text, "LEMON");
         String vigenereDec = ClassicalCiphers.decryptVigenere(vigenereEnc, "LEMON");
         assertEquals(text, vigenereDec);
     }
 
-    // --- NEGATIVE TESTS & ANTI-BUG VERIFICATIONS ---
+    // --- Integrity and Validation Tests ---
 
     @Test
-    @DisplayName("Anti-Bug Assertion: Tampered AES-GCM Ciphertext Throws CryptoEngineException")
+    @DisplayName("AES-GCM tag verification rejects tampered ciphertext")
     void testAesGcmTamperCiphertextFails() {
         SecretKey key = AesService.generateAesKey(256);
         byte[] iv = AesService.generateIv();
         byte[] ciphertext = AesService.encryptGcm(TEST_PAYLOAD, key, iv, AAD_METADATA);
 
-        // Tamper 1 bit in ciphertext
+        // Flip 1 bit in ciphertext
         byte[] tampered = ciphertext.clone();
         tampered[0] ^= 0x01;
 
@@ -348,7 +343,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Anti-Bug Assertion: Tampered AES-GCM AAD Throws CryptoEngineException")
+    @DisplayName("AES-GCM tag verification rejects tampered AAD")
     void testAesGcmTamperAadFails() {
         SecretKey key = AesService.generateAesKey(256);
         byte[] iv = AesService.generateIv();
@@ -361,7 +356,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Anti-Bug Assertion: Tampered RSA Signature Returns False")
+    @DisplayName("RSA-PSS signature verification rejects altered payload")
     void testTamperedSignatureReturnsFalse() {
         KeyPair kp = RsaService.generateRsaKeyPair(2048);
         byte[] signature = RsaService.signPss(TEST_PAYLOAD, kp.getPrivate());
@@ -374,7 +369,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Anti-Bug Assertion: Mismatched Key Secret Derivation Produces Non-Matching Secrets")
+    @DisplayName("ECDH derivation with different keys yields different secrets")
     void testMismatchedEcdhKeysFail() {
         KeyPair aliceKp = KeyAgreementService.generateEcdhKeyPair();
         KeyPair bobKp = KeyAgreementService.generateEcdhKeyPair();
@@ -387,7 +382,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Diagnostic Suite: Automated Self-Diagnostic Run Execution")
+    @DisplayName("Self-test diagnostics run successfully")
     void testDiagnosticRunAll() {
         List<CryptoEngineDiagnostics.DiagnosticResult> results = CryptoEngineDiagnostics.runAllDiagnostics();
         assertNotNull(results);
@@ -396,7 +391,7 @@ public class ComprehensiveCryptoTest {
     }
 
     @Test
-    @DisplayName("Key Zeroization: Buffer Wiping Assertion")
+    @DisplayName("Key buffer zeroization wipes memory array")
     void testKeyZeroizer() {
         byte[] buffer = new byte[]{(byte) 0xFF, 0x12, 0x34, 0x56};
         KeyZeroizer.zeroize(buffer);

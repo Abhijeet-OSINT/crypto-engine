@@ -63,7 +63,7 @@
                     <mainClass>com.securecrypto.engine.CryptoApplication</mainClass>
                 </configuration>
             </plugin>
-            <!-- Executable Fat JAR Plugin for standalone portability -->
+            <!-- Assembly plugin for standalone jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>

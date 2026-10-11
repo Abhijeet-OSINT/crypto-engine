@@ -20,9 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Automated diagnostic health check module for Crypto Engine.
- * Actively tests provider presence, KAT test vectors, nonce freshness,
- * tamper resistance (AEAD bad tag detection), key zeroization, and hybrid PQC encapsulation.
+ * Self-test diagnostics for cryptographic primitives and configurations.
  */
 public final class CryptoEngineDiagnostics {
 
@@ -234,25 +232,24 @@ public final class CryptoEngineDiagnostics {
     }
 
     private static void printSummaryReport(List<DiagnosticResult> results, long durationMs) {
-        System.out.println("\n========================================================================================");
-        System.out.println("                     CRYPTO ENGINE AUTOMATED DIAGNOSTIC REPORT                          ");
-        System.out.println("========================================================================================");
+        System.out.println("\n------------------------------------------------------------");
+        System.out.println("                 Self-Test Diagnostics                     ");
+        System.out.println("------------------------------------------------------------");
 
         boolean allPassed = true;
         for (DiagnosticResult r : results) {
-            String status = r.passed ? "[ PASS ]" : "[ FAIL ]";
-            System.out.printf("%-10s %-25s : %s%n", status, r.testName, r.details);
+            String status = r.passed ? "[OK]  " : "[FAIL]";
+            System.out.printf("%-6s %-24s : %s%n", status, r.testName, r.details);
             if (!r.passed) allPassed = false;
         }
 
-        System.out.println("----------------------------------------------------------------------------------------");
-        System.out.printf("Execution Time: %d ms | Total Tests: %d%n", durationMs, results.size());
-        System.out.println("========================================================================================");
+        System.out.println("------------------------------------------------------------");
+        System.out.printf("Finished in %d ms (%d checks)%n", durationMs, results.size());
         if (allPassed) {
-            System.out.println("STATUS: ALL DIAGNOSTIC CHECKS PASSED SUCCESSFULLY. ENGINE HEALTH: 100%");
+            System.out.println("All diagnostics passed.");
         } else {
-            System.out.println("STATUS: WARNING - ONE OR MORE DIAGNOSTIC CHECKS FAILED.");
+            System.out.println("One or more diagnostic checks failed.");
         }
-        System.out.println("========================================================================================\n");
+        System.out.println("------------------------------------------------------------\n");
     }
 }

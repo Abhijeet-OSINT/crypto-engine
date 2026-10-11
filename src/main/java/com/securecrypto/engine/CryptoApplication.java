@@ -26,21 +26,18 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Scanner;
 
 /**
- * Interactive Terminal CLI Application for the Cryptographic Suite.
- * Features guided submenus for [1. Encrypt, 2. Decrypt, 3. Full Demo]
- * across all symmetric, asymmetric, post-quantum, and classical algorithms.
+ * Command-line interface for testing cryptographic functions.
  */
 public class CryptoApplication {
 
     private static final Scanner SCANNER = new Scanner(System.in);
 
     public static void main(String[] args) {
-        System.out.println("================================================================================");
-        System.out.println("               COMPREHENSIVE JAVA CRYPTOGRAPHIC ENGINEERING SUITE               ");
-        System.out.println("                              (JDK 21+ / FIPS 203 PQC)                         ");
-        System.out.println("================================================================================");
+        System.out.println("==================================================");
+        System.out.println("                 Crypto Engine CLI                ");
+        System.out.println("==================================================");
 
-        // Run startup diagnostics automatically
+        // Run startup self-test
         CryptoEngineDiagnostics.runAllDiagnostics();
 
         boolean running = true;
